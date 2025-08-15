@@ -14,6 +14,7 @@ import DailyModal from './ui/screens/DailyModal'
 import { cleanNow } from './game/actions'
 import { getEffectiveCaps } from './game/actions'
 import { ensureDailyState } from './game/progress'
+import PetSprite from './ui/components/PetSprite'
 
 export default function App(){
   const { t, i18n } = useTranslation()
@@ -67,7 +68,7 @@ export default function App(){
 
       {/* 宠物与房间占位 + 调试按钮 */}
       <div className="pet-area card" style={{position:'relative'}}>
-        <div className="pet-placeholder" role="img" aria-label="pet" />
+        <PetSprite />
         {import.meta.env.DEV && (
           <button
             onClick={()=>applyNTicks(1)}
@@ -99,7 +100,14 @@ export default function App(){
       <InventoryModal open={invOpen} onClose={()=>setInvOpen(false)} />
       <DailyModal open={dailyOpen} onClose={()=>setDailyOpen(false)} />
       <GameMenuModal open={menuOpen} onClose={()=>setMenuOpen(false)}
-        onPick={(k)=>{ setMenuOpen(false); k==='rhythm'? setRhOpen(true): setBbOpen(true) }} />
+        onPick={(k)=>{ 
+          setMenuOpen(false)
+          if (k === 'rhythm') {
+            setRhOpen(true)
+          } else {
+            setBbOpen(true)
+          }
+        }} />
       <RhythmGameModal open={rhOpen} onClose={()=>setRhOpen(false)} />
       <BubbleCleanModal open={bbOpen} onClose={()=>setBbOpen(false)} />
     </div>

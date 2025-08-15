@@ -1,4 +1,41 @@
-# React + TypeScript + Vite
+# Pixel Pet Game (React + TypeScript + Vite)
+
+## Vercel Deployment
+
+### Option 1: Command Line (Recommended)
+```bash
+# 1) Build production files
+pnpm run build
+
+# 2) Initialize git (if not already)
+git init
+git add -A
+git commit -m "feat: pwa + sprite + sfx"
+
+# 3) Push to GitHub (after creating repo)
+git remote add origin <your-github-repo-url>
+git branch -M main
+git push -u origin main
+
+# 4) Vercel Console -> Import Git Repository
+#    Framework: Vite
+#    Build Command: pnpm build
+#    Output Directory: dist
+#    Install Command: pnpm i --frozen-lockfile
+```
+
+### Option 2: Vercel CLI
+```bash
+pnpm i -D vercel
+pnpx vercel login
+pnpx vercel   # First run will ask:
+              # Root = project root
+              # Build = pnpm build
+              # Output = dist
+pnpx vercel --prod
+```
+
+## Development Setup
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 

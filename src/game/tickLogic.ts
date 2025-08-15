@@ -1,24 +1,24 @@
 import { useGame } from './state'
-import type { Store } from './state'
-import { clamp } from '../utils/num'
 import { TICK_MINUTES, DECAY_PER_TICK, SLEEP_MOD, OFFLINE_CAP_HOURS } from '../config/constants'
+import { getEffectiveCaps } from './actions'
 
-export const STEP = TICK_MINUTES * 60         // 单步长(秒)
-const CAP = OFFLINE_CAP_HOURS * 3600          // 离线封顶(秒)
-const nowSec = () => Math.floor(Date.now()/1000)
+export const STEP = TICK_MINUTES * 60
+const CAP = OFFLINE_CAP_HOURS * 3600
 
-// 一步结算：衰减/恢复/健康推导 + 推进 lastTick
+const clamp = (v:number,min:number,max:number)=>Math.max(min,Math.min(max,v))
+
 export function applyOneTick() {
-  useGame.setState((s: Store) => {
+  useGame.setState((s) => {
+    const caps = getEffectiveCaps()
     const factor = s.flags.sleeping ? SLEEP_MOD.decayFactor : 1
 
-    const hunger      = clamp(s.stats.hunger      - DECAY_PER_TICK.hunger      * factor, 0, 100)
-    const mood        = clamp(s.stats.mood        - DECAY_PER_TICK.mood        * factor, 0, 100)
-    const cleanliness = clamp(s.stats.cleanliness - DECAY_PER_TICK.cleanliness * factor, 0, 100)
+    const hunger      = clamp(s.stats.hunger      - DECAY_PER_TICK.hunger      * factor, 0, caps.hunger)
+    const mood        = clamp(s.stats.mood        - DECAY_PER_TICK.mood        * factor, 0, caps.mood)
+    const cleanliness = clamp(s.stats.cleanliness - DECAY_PER_TICK.cleanliness * factor, 0, caps.cleanliness)
     const energy      = clamp(
       s.flags.sleeping ? s.stats.energy + SLEEP_MOD.energyGainPerTick
                         : s.stats.energy - DECAY_PER_TICK.energy,
-      0, 100
+      0, caps.energy
     )
 
     let health = s.stats.health
@@ -34,10 +34,9 @@ export function applyOneTick() {
   })
 }
 
-// 进入页面/回到前台：按 5 分钟步长补算离线，并返回下一次目标时间点（秒）
 export function settleOfflineAndGetNextAt(): number {
+  const now = Math.floor(Date.now()/1000)
   const s0 = useGame.getState()
-  const now = nowSec()
   let delta = now - s0.timestamps.lastTick
   if (delta > 0) {
     const capped = Math.min(delta, CAP)
@@ -48,7 +47,6 @@ export function settleOfflineAndGetNextAt(): number {
   return s1.timestamps.lastTick + STEP
 }
 
-// 可选：开发用批量推进
 export function applyNTicks(n: number) {
   for (let i=0; i<n; i++) applyOneTick()
 }

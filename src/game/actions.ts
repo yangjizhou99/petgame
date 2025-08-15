@@ -25,39 +25,57 @@ function effectiveCapsFromDecos(decos: string[]): Caps {
 const clamp = (v:number,min:number,max:number)=>Math.max(min,Math.min(max,v))
 
 export function feedFood(foodId: string) {
+  let consumed = false
+
   useGame.setState(s=>{
     const foodDef = FOODS.find(f=>f.id===foodId)
     const invIdx  = s.inventory.findIndex(it=>it.id===foodId && (it.qty??0)>0)
     if (!foodDef || invIdx<0) return s
 
     const caps = effectiveCapsFromDecos(s.decos)
-    const qty  = (s.inventory[invIdx].qty||0) - 1
-    const hunger      = clamp(s.stats.hunger      + (foodDef.hunger||0), 0, caps.hunger)
-    const mood        = clamp(s.stats.mood        + (foodDef.mood||0),   0, caps.mood)
-    const cleanliness = clamp(s.stats.cleanliness + (foodDef.clean||0),  0, caps.cleanliness)
+    const nextInv = [...s.inventory]
+    nextInv[invIdx] = { ...nextInv[invIdx], qty: (nextInv[invIdx].qty || 0) - 1 }
 
-    const newInv = [...s.inventory]
-    newInv[invIdx] = { ...newInv[invIdx], qty }
+    consumed = true
 
+    return {
+      ...s,
+      stats: {
+        ...s.stats,
+        hunger:      clamp(s.stats.hunger      + (foodDef.hunger||0), 0, caps.hunger),
+        mood:        clamp(s.stats.mood        + (foodDef.mood||0),   0, caps.mood),
+        cleanliness: clamp(s.stats.cleanliness + (foodDef.clean||0),  0, caps.cleanliness)
+      },
+      inventory: nextInv
+    }
+  })
+
+  if (consumed) {
     addTaskProgress('feed')
     grantReward(REWARDS.feed)
-
-    return { ...s, stats:{...s.stats,hunger,mood,cleanliness}, inventory:newInv }
-  })
+  }
 }
 
 export function cleanNow() {
-  // 简易一次性清洁（第4步会替换为小游戏），不消耗物品
+  let did = false
+
   useGame.setState(s=>{
     const caps = effectiveCapsFromDecos(s.decos)
-    const cleanliness = clamp(s.stats.cleanliness + 25, 0, caps.cleanliness)
-    const mood        = clamp(s.stats.mood + 5, 0, caps.mood)
+    did = true
+    return {
+      ...s,
+      stats: {
+        ...s.stats,
+        cleanliness: clamp(s.stats.cleanliness + 25, 0, caps.cleanliness),
+        mood:        clamp(s.stats.mood + 5,             0, caps.mood)
+      }
+    }
+  })
 
+  if (did) {
     addTaskProgress('clean')
     grantReward(REWARDS.clean)
-
-    return { ...s, stats: { ...s.stats, cleanliness, mood } }
-  })
+  }
 }
 
 export function buy(kind:'food'|'deco'|'toy', id: string) {

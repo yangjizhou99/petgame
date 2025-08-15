@@ -1,0 +1,95 @@
+:root{
+  --bg:#0e1014;
+  --card:#151922;
+  --text:#e6e9ef;
+  --muted:#93a1b1;
+  --brand:#ffd166;   /* 32色暖系基调 */
+  --accent:#ff5a3c;
+  --good:#16a34a;
+}
+
+*{ box-sizing: border-box; }
+html,body,#root{ height:100%; }
+body{
+  margin:0;
+  font-family: ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Emoji;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* 像素感：关键两行 */
+img,canvas{
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* 布局 */
+.app{
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 12px;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  gap: 12px;
+  height: 100%;
+}
+
+.card{
+  background: var(--card);
+  border: 1px solid #242a36;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.topbar{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+}
+
+.status-grid{
+  display: grid; gap: 8px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.pet-area{
+  display: grid; place-items: center;
+  height: 260px;
+  background:
+    linear-gradient(0deg,#10131a 60%, #0b0d12 60%); /* 地板/墙面 */
+  border: 1px solid #242a36;
+  border-radius: 12px;
+}
+
+/* 像素宠物占位 */
+.pet-placeholder{
+  width: 96px; height: 96px;
+  background:
+    linear-gradient(90deg, transparent 31px, #000 31px 33px, transparent 33px),
+    linear-gradient(180deg, transparent 31px, #000 31px 33px, transparent 33px),
+    #ffd166;
+  border: 2px solid #000;
+}
+
+/* 底部四按钮 */
+.actions{
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.icon-btn{
+  display: grid; place-items: center;
+  height: 48px; border-radius: 10px; border:1px solid #2a3140;
+  background:#1a1f2b; color:#fff; cursor: not-allowed;
+  user-select:none;
+}
+.icon-btn span{ font-size: 18px; }
+.lang{
+  display:flex; gap:6px; align-items:center;
+}
+.lang button{
+  background:#1a1f2b; color:#fff; border:1px solid #2a3140;
+  padding:4px 8px; border-radius:8px; cursor:pointer;
+}
+.lang button.active{ outline:2px solid var(--brand); }
+.coin{
+  padding: 6px 10px; border-radius: 8px;
+  background: #1a1f2b; border:1px solid #2a3140;
+}

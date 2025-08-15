@@ -1,0 +1,12 @@
+{
+  "title": "Pixel Pet",
+  "coins": "Coins",
+  "hunger": "Hunger",
+  "mood": "Mood",
+  "cleanliness": "Cleanliness",
+  "energy": "Energy",
+  "feed": "Feed",
+  "play": "Play",
+  "clean": "Clean",
+  "sleep": "Sleep"
+}

@@ -1,6 +1,7 @@
 import { useGame } from './state'
 import { FOODS, DECOS, TOYS } from '../config/items'
-import { CAPS } from '../config/constants'
+import { CAPS, REWARDS } from '../config/constants'
+import { addTaskProgress, grantReward } from './progress'
 
 type Caps = { hunger:number; mood:number; cleanliness:number; energy:number }
 function effectiveCapsFromDecos(decos: string[]): Caps {
@@ -33,10 +34,13 @@ export function feedFood(foodId: string) {
     const qty  = (s.inventory[invIdx].qty||0) - 1
     const hunger      = clamp(s.stats.hunger      + (foodDef.hunger||0), 0, caps.hunger)
     const mood        = clamp(s.stats.mood        + (foodDef.mood||0),   0, caps.mood)
-    const cleanliness = clamp(s.stats.cleanliness + (foodDef.clean||0),  0, caps.cleanliness) // 注意：clean 为负数时会下降
+    const cleanliness = clamp(s.stats.cleanliness + (foodDef.clean||0),  0, caps.cleanliness)
 
     const newInv = [...s.inventory]
     newInv[invIdx] = { ...newInv[invIdx], qty }
+
+    addTaskProgress('feed')
+    grantReward(REWARDS.feed)
 
     return { ...s, stats:{...s.stats,hunger,mood,cleanliness}, inventory:newInv }
   })
@@ -48,6 +52,10 @@ export function cleanNow() {
     const caps = effectiveCapsFromDecos(s.decos)
     const cleanliness = clamp(s.stats.cleanliness + 25, 0, caps.cleanliness)
     const mood        = clamp(s.stats.mood + 5, 0, caps.mood)
+
+    addTaskProgress('clean')
+    grantReward(REWARDS.clean)
+
     return { ...s, stats: { ...s.stats, cleanliness, mood } }
   })
 }

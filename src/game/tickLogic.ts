@@ -1,6 +1,7 @@
 import { useGame } from './state'
 import { TICK_MINUTES, DECAY_PER_TICK, SLEEP_MOD, OFFLINE_CAP_HOURS } from '../config/constants'
 import { getEffectiveCaps } from './actions'
+import { ensureDailyState } from './progress'
 
 export const STEP = TICK_MINUTES * 60
 const CAP = OFFLINE_CAP_HOURS * 3600
@@ -35,6 +36,7 @@ export function applyOneTick() {
 }
 
 export function settleOfflineAndGetNextAt(): number {
+  ensureDailyState()
   const now = Math.floor(Date.now()/1000)
   const s0 = useGame.getState()
   let delta = now - s0.timestamps.lastTick

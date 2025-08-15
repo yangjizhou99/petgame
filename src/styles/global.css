@@ -106,3 +106,6 @@ img,canvas{
 }
 .btn:disabled{ opacity:.5; cursor:not-allowed; }
 .small-btn{ padding:4px 8px; border-radius:8px; background:#1a1f2b; border:1px solid #2a3140; color:#fff; cursor:pointer; }
+
+/* ---- Minigames helpers ---- */
+.card ul{ margin:6px 0 0 18px; padding:0; }

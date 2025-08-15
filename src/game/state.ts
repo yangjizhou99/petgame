@@ -7,7 +7,7 @@ export type Stats = {
 export type Pet = { species: 'cat' | 'dog'; stage: 'baby'|'teen'|'adult'|'elite'; exp: number; skinId: string }
 export type InventoryItem = { id: string; qty?: number; uses?: number }
 
-type Store = {
+export type Store = {
   pet: Pet
   stats: Stats
   coins: number

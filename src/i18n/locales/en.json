@@ -8,5 +8,6 @@
   "feed": "Feed",
   "play": "Play",
   "clean": "Clean",
-  "sleep": "Sleep"
+  "sleep": "Sleep",
+  "wake": "Wake"
 }
